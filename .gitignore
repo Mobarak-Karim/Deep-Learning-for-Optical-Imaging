@@ -1,0 +1,13 @@
+__pycache__/
+.ipynb_checkpoints/
+.venv/
+.env
+*.pt
+*.pth
+*.ckpt
+runs/
+wandb/
+data/raw/*
+!data/raw/.gitkeep
+outputs/*
+!outputs/.gitkeep
