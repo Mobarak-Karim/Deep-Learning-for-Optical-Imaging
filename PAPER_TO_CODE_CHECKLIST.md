@@ -1,120 +1,149 @@
-# Paper → Code Checklist
+# Paper-to-Code Checklist
 
 Copy this file for every paper you seriously consider implementing.
 
-## 1. Scientific question
+## A. Paper identity
 
-- **Paper:**
-- **DOI / URL:**
-- **Modality:** OCT / fluorescence / LSFM / MUSE / histology / other
-- **Task:** segmentation / denoising / restoration / classification / translation / reconstruction / other
-- **What exact problem does the paper claim to solve?**
-- **Is that actually the same as my problem?**
+```text
+Paper title:
+Authors:
+Year:
+DOI/URL:
+Repository:
+Repository commit/tag:
+Code license:
+Weights license:
+Dataset license:
+```
 
-## 2. Data specification
+## B. Scientific question
 
-- Input tensor/image:
-- Target:
-- Paired or unpaired:
-- 2-D / 2.5-D / 3-D:
-- Channels:
-- Spatial resolution / pixel size:
-- Training data size:
-- Biological unit (patient/specimen/animal):
-- Train/validation/test splitting rule:
-- External dataset:
+```text
+Problem:
+Input modality:
+Input dimensions/channels:
+Target:
+Independent biological unit:
+Population/specimens:
+Claimed improvement:
+Comparison baseline:
+Critical scientific failure mode:
+```
 
-## 3. Preprocessing
+## C. Data pipeline
 
-- Intensity normalization:
-- Cropping/resizing:
-- Registration/alignment:
-- Background correction:
-- Augmentation:
-- Patch extraction:
-- Anything described only in supplement/code:
+```text
+Train subjects:
+Validation subjects:
+Test subjects:
+Split unit:
+Patch extraction:
+Resize/crop:
+Normalization:
+Clipping/log transform:
+Augmentation:
+Registration:
+Target generation:
+Blank/artifact rejection:
+```
 
-## 4. Model specification
+## D. Architecture
 
-- Architecture:
-- Encoder/backbone:
-- Input shape:
-- Output shape:
-- Activation:
-- Normalization layers:
-- Skip connections:
-- Pretrained weights:
-- Parameter count if reported:
+```text
+Architecture family:
+Input shape:
+Encoder stages:
+Decoder stages:
+Channels:
+Kernel sizes:
+Downsampling:
+Upsampling:
+Skip connections:
+Normalization layers:
+Activations:
+Dropout:
+Attention/residual blocks:
+Output channels:
+Output activation:
+Parameter count if reported:
+```
 
-## 5. Loss / optimization
+## E. Loss / equations
 
-Write the original equation before translating it.
+For every loss term record:
 
-- Loss equation:
-- Meaning of every term:
-- Weights/lambdas:
-- Optimizer:
-- Learning rate:
-- Scheduler:
-- Batch size:
-- Epochs/iterations:
-- Weight decay:
-- Gradient clipping:
-- Checkpoint selection:
+```text
+Name:
+Equation:
+Input:
+Reduction:
+Coefficient:
+Smoothing constants:
+Class weights:
+Implementation file/function:
+```
 
-## 6. Reported metrics
+## F. Training
 
-- Primary metric:
-- Exact definition/implementation:
-- Averaged per image, specimen, or pixel?:
-- Confidence intervals?:
-- Statistical test?:
-- Best reported result:
+```text
+Optimizer:
+Learning rate:
+Weight decay:
+Scheduler:
+Warmup:
+Batch size:
+Epochs:
+Gradient clipping:
+AMP:
+Checkpoint rule:
+Early stopping:
+Seed:
+Hardware:
+Software versions:
+```
 
-## 7. Repository audit
+## G. Evaluation
 
-- GitHub/repository URL:
-- License:
-- Commit/tag used:
-- Environment file:
-- Python version:
-- PyTorch version:
-- CUDA version:
-- Training code:
-- Inference code:
-- Pretrained weights:
-- Data loader:
-- Metric code:
-- Random seed:
-- Paper/code discrepancy:
+```text
+Primary metric:
+Exact definition:
+Threshold:
+Aggregation level:
+Postprocessing:
+Confidence intervals:
+External validation:
+Main reported number:
+```
 
-## 8. Reproduction result
+## H. Paper/code discrepancy log
 
-- Can one provided example run?: YES / NO
-- Can pretrained inference reproduce a plausible result?: YES / NO
-- Can a reported metric/result be approximately reproduced?: YES / NO
-- What failed?:
+| Item | Paper | Code | Decision | Evidence |
+|---|---|---|---|---|
+| | | | | |
 
-## 9. Decision
+## I. Reproduction outcome
 
-Choose one:
+```text
+Inference example runs: YES/NO
+Released checkpoint runs: YES/NO
+Reference metric reproduced: YES/NO/PARTIAL
+Training reproduced: YES/NO/NOT ATTEMPTED
+Observed result:
+Expected result:
+Differences:
+Fixes made:
+```
 
-- [ ] Use authors' code as baseline
-- [ ] Reuse selected components only
-- [ ] Adapt the full implementation
-- [ ] Reimplement from paper
-- [ ] Do not use this method
+## J. Final decision
 
-### Reason
+```text
+[ ] REUSE
+[ ] ADAPT
+[ ] REIMPLEMENT
+[ ] REJECT
 
-Write the scientific and engineering reason, not just "code works" or "code is old."
-
-## 10. Validation plan for my data
-
-- Biological-unit split:
-- Domain-shift tests:
-- Quantitative metric:
-- Optical/physical validation:
-- Biological/pathology validation:
-- Failure cases to inspect:
-- What result would make me reject the method?:
+Reason:
+Scientific risk:
+Technical risk:
+Next experiment:
+```

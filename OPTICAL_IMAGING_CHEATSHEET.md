@@ -1,147 +1,157 @@
-# Optical Imaging Deep-Learning Cheat Sheet
+# Optical-Imaging Deep-Learning Cheat Sheet
 
-This sheet gives **starting points**, not automatic prescriptions. Build a simple validated baseline before moving to a more complex architecture.
+## Start with the scientific task, not the architecture
 
-## Task → baseline → loss → validation
-
-| Optical-imaging task | Sensible first baseline | Typical first loss | Important validation |
+| Problem | First baseline | Typical loss | Primary validation |
 |---|---|---|---|
-| Binary segmentation | 2-D U-Net | BCE-with-logits + Dice | Dice, IoU, sensitivity, specimen-level split |
-| Multi-class segmentation | U-Net / residual U-Net | Cross-entropy + Dice | per-class Dice, confusion matrix |
-| Image classification | ResNet-18/34 transfer learning | Cross-entropy | AUROC, F1, sensitivity/specificity, external set |
-| Fluorescence denoising | residual CNN or U-Net | L1 / Charbonnier | PSNR/SSIM + structure/intensity preservation |
-| OCT denoising/speckle reduction | residual CNN/U-Net | L1/Charbonnier + optional structural term | CNR/SNR, SSIM, layer/feature preservation |
-| Super-resolution | residual encoder-decoder first | L1 | PSNR/SSIM + measured resolution/structure |
-| MUSE → virtual H&E | paired U-Net/ResUNet baseline | L1 + structural/color term | morphology, color consistency, pathology review |
-| Label-free → fluorescence | paired encoder-decoder | L1/L2 + structural term | correlation/SSIM + biological feature validation |
-| Reconstruction/inverse problem | data-consistent baseline | image loss + measurement consistency | fidelity to measured signal + task metric |
-| 3-D segmentation | 3-D U-Net only if justified | Dice + CE/BCE | volume-level metrics and memory feasibility |
+| binary segmentation | U-Net | BCE + Dice | Dice + sensitivity + overlays |
+| multi-class segmentation | U-Net/ResUNet | CE + Dice | per-class Dice/IoU |
+| image classification | small ResNet | cross-entropy | AUROC/F1 + calibration |
+| fluorescence denoising | residual CNN/U-Net | L1 first | PSNR/SSIM + dim-structure preservation |
+| OCT denoising/restoration | residual CNN/U-Net | L1/Charbonnier + structural term | structure, profiles, downstream metrics |
+| super-resolution | residual U-Net/RCAN-style baseline | L1 first | resolution target + PSNR/SSIM + hallucination tests |
+| MUSE → virtual H&E | paired U-Net/ResUNet first | L1 + structural/color term | morphology + color + blinded review |
+| label-free → fluorescence | encoder-decoder | L1/L2 + structural | correlation/SSIM + biological measurements |
+| quantitative regression | small CNN/MLP baseline | MSE/L1 | error, bias, calibration, physical plausibility |
 
-## Model choice hierarchy
+## Modality-specific questions
 
-```text
-Linear/logistic baseline when applicable
-        ↓
-Small CNN
-        ↓
-U-Net or ResNet baseline
-        ↓
-Residual/attention modifications
-        ↓
-Transformer/diffusion/large model only when evidence justifies it
-```
-
-A complicated model is not automatically a better scientific model.
-
-## Paper audit in 60 seconds
+### OCT
 
 ```text
-TASK
-□ What is input?
-□ What is target?
-□ Paired or unpaired?
-□ 2-D / 2.5-D / 3-D?
-□ Pixel size / resolution?
-
-TRAINING
-□ Normalization?
-□ Augmentation?
-□ Loss equation?
-□ Optimizer / LR?
-□ Batch size / epochs?
-□ Checkpoint selection?
-
-VALIDATION
-□ Patient/specimen-level split?
-□ Metric definition?
-□ External test set?
-□ Biological/physical validation?
-
-CODE
-□ License?
-□ Environment?
-□ Pretrained weights?
-□ Training script?
-□ Inference script?
-□ Paper and code agree?
+□ B-scan or volume?
+□ linear intensity or log-compressed display image?
+□ axial/lateral sampling?
+□ scanner/vendor?
+□ reconstruction settings?
+□ speckle statistics relevant?
+□ quantitative attenuation/intensity preserved?
+□ pathology/domain shift?
 ```
 
-## Authors' code decision
-
-| Situation | Preferred action |
-|---|---|
-| Code is complete, licensed, reproducible, and matches task | reuse as baseline |
-| Core model useful but pipeline mismatched | reuse selected components |
-| Code incomplete/outdated but paper clear | reimplement minimum faithful model |
-| License unclear/incompatible | do not copy code; implement from paper concepts where legally appropriate |
-| Cannot reproduce or understand result | do not build your research conclusion on it yet |
-
-## Debugging order
+### Fluorescence microscopy
 
 ```text
-1. Check one sample manually
-2. Check tensor shapes
-3. Check dtype/range
-4. Check target alignment
-5. Visualize augmentation
-6. Overfit 4–16 samples
-7. Inspect loss curve
-8. Inspect predictions
-9. Only then run full training
+□ photon-limited regime?
+□ detector/read noise?
+□ exposure/power variation?
+□ bleaching?
+□ channel crosstalk?
+□ absolute intensity biologically meaningful?
+□ dim puncta/small structures preserved?
 ```
 
-## Optimization order
+### LSFM / volumetric microscopy
 
 ```text
-Correctness → baseline → benchmark → DataLoader → AMP → batch strategy → profiler → compile → multi-GPU
+□ 2-D, 2.5-D, or 3-D model?
+□ anisotropic z spacing?
+□ tile/stitch artifacts?
+□ attenuation with depth?
+□ motion/time-series correlation?
+□ animal/embryo-level split?
 ```
 
-### Current PyTorch patterns
-
-```python
-# AMP
-scaler = torch.amp.GradScaler("cuda")
-with torch.autocast(device_type="cuda", dtype=torch.float16):
-    pred = model(x)
-    loss = loss_fn(pred, y)
-
-# Optional compilation after a working baseline
-model = torch.compile(model)
-```
-
-Profile before guessing where time is spent.
-
-## Optical-imaging red flags
-
-- random patch split lets patches from one specimen appear in train and test;
-- normalization differs between training and inference;
-- virtual staining evaluated only by color similarity;
-- denoising evaluated only by visual smoothness;
-- super-resolution produces structures without measurement-domain support;
-- segmentation threshold tuned on the test set;
-- test data repeatedly inspected during model design;
-- only the best-looking image is shown;
-- no analysis across acquisition days/instruments/specimens.
-
-## Minimum experiment record
+### MUSE / virtual staining / histology
 
 ```text
-paper/method:
-git commit:
-Python/PyTorch/CUDA:
-GPU:
-data version:
-train/val/test specimen IDs:
-normalization:
-augmentation:
-model:
-loss:
-optimizer:
-learning rate:
-batch size:
-epochs:
-seed:
-checkpoint rule:
-metrics:
-known limitations:
+□ paired or unpaired?
+□ registration accuracy?
+□ tissue preparation differences?
+□ color calibration/batch effect?
+□ nuclei/gland/vessel morphology preserved?
+□ model can invent/delete diagnostic structures?
+□ patient-level split?
 ```
+
+## Segmentation checklist
+
+```text
+Input -> logits -> loss -> probability -> threshold -> mask -> QC
+```
+
+Never use thresholded masks inside a differentiable training loss.
+
+Validate:
+- Dice/IoU;
+- sensitivity/specificity;
+- thin/small structure performance;
+- boundary quality;
+- per-specimen distribution;
+- worst-case overlays.
+
+## Restoration / denoising checklist
+
+```text
+□ What is the clean target?
+□ Is it truly aligned?
+□ Does simulated noise match the instrument?
+□ Is intensity quantitative?
+□ PSNR/SSIM computed with correct data range?
+□ Are dim structures erased?
+□ Are structures hallucinated in blank/low-SNR regions?
+□ Does downstream measurement change?
+```
+
+## Virtual-staining checklist
+
+```text
+□ pairing/registration documented
+□ deterministic baseline tested before GAN
+□ pixel/structural/adversarial loss roles separated
+□ color measured
+□ morphology measured
+□ false insertion/deletion tested
+□ rare pathology represented
+□ external tissue/site/instrument tested
+```
+
+## Data split rule
+
+```text
+independent specimen first
+↓
+train / validation / test
+↓
+then patches / slices / frames within each split
+```
+
+Never random-split patches first when patches share a patient/animal/tissue source.
+
+## Metric selection
+
+| Task | Useful metrics | What they do not prove |
+|---|---|---|
+| segmentation | Dice, IoU, sensitivity, specificity | biological importance of each error |
+| restoration | PSNR, SSIM | absence of hallucination |
+| classification | AUROC, PR-AUC, sensitivity/specificity | calibration/generalization |
+| regression | MAE, RMSE, bias, correlation | causal/physical validity |
+| virtual staining | SSIM/color difference/morphology | diagnostic safety by themselves |
+
+## Hallucination stress tests
+
+```text
+blank field
+low-SNR field
+rare morphology
+synthetic inserted structure
+synthetic removed structure
+phantom/resolution target
+new instrument/site
+new acquisition parameters
+```
+
+Always inspect input, target, output, and error map.
+
+## Model-selection rule
+
+```text
+Start simple.
+Prove the data pipeline.
+Prove the split.
+Prove the metric.
+Prove tiny-set overfit.
+Then increase architecture complexity.
+```
+
+Do not start with a transformer/diffusion model only because the paper is newer.

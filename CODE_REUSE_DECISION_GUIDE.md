@@ -1,74 +1,95 @@
-# Should I Use the Authors' Code?
+# Authors' Code: Reuse, Adapt, Reimplement, or Reject?
 
-Use this guide before copying a research repository into your project.
+## Step 1 — Ask whether the method matches the problem
 
-## Four possible decisions
-
-### 1. Reuse
-Choose this when the code is understandable, licensed, close to your task, and reproducible.
-
-### 2. Adapt
-Choose this when the repository provides a strong tested foundation but some preprocessing, model outputs, losses, or data handling must change.
-
-### 3. Reimplement
-Choose this when the scientific method is useful but the repository is absent, incomplete, outdated, incompatible, legally unclear for reuse, or harder to adapt than to rebuild.
-
-### 4. Reject
-Choose this when the method does not match your scientific question, relies on unavailable information, cannot be validated, or adds complexity without evidence of benefit.
-
-## Weighted decision table
-
-Score each item 0–2.
-
-| Criterion | 0 | 1 | 2 |
-|---|---|---|---|
-| Scientific task match | poor | partial | strong |
-| Data/modality match | poor | partial | strong |
-| License clarity | unusable/unclear | restrictions | clear/compatible |
-| Paper-code agreement | poor | uncertain | strong |
-| Reproducibility | fails | partial | reproduced |
-| Environment maintainability | very fragile | manageable | clean |
-| Training completeness | missing | partial | complete |
-| Pretrained weights | no | partial | yes |
-| Metric transparency | unclear | partial | clear |
-| Validation suitability | poor | partial | strong |
-
-A high score supports reuse/adaptation. A low score is a warning, not a mathematical verdict.
-
-## Never skip the license check
-
-Public GitHub visibility does not automatically grant permission to copy, redistribute, or create derivatives. Check the repository license and the licenses for datasets, model weights, and third-party code separately.
-
-## Minimum reproduction gate
-
-Before adapting the code, try to pass these gates:
-
-1. environment installs;
-2. one sample inference runs;
-3. tensor preprocessing matches the paper;
-4. output shape/range makes sense;
-5. one published qualitative or quantitative behavior can be approximated.
-
-If you cannot pass the gates, document why before modifying the code.
-
-## Minimum reimplementation process
+Do not evaluate code quality before asking whether the scientific problem itself matches.
 
 ```text
-Paper figure/table/equation
-       ↓
-Write specification in plain language
-       ↓
-Implement preprocessing separately
-       ↓
-Implement model with shape tests
-       ↓
-Implement each loss term separately
-       ↓
-Unit-test equations
-       ↓
-Overfit 4–16 samples
-       ↓
-Reproduce expected behavior
-       ↓
-Only then optimize or extend
+same input modality?
+same target definition?
+similar sampling/resolution?
+similar population/tissue?
+similar acquisition physics?
+same intended use: visualization vs quantitative analysis?
 ```
+
+## Step 2 — Check legal/usage constraints
+
+Public GitHub code is not automatically free to reuse. Check code, weights, data, and assets separately.
+
+## Step 3 — Audit reproducibility
+
+Strong evidence:
+- pinned/clear environment;
+- full training + inference code;
+- explicit preprocessing;
+- configs;
+- released weights;
+- metric implementation;
+- reproducible example.
+
+Weak evidence:
+- only model class;
+- no dataloader;
+- no license;
+- hidden preprocessing;
+- README contradicts code;
+- unknown split.
+
+## Step 4 — Make one of four decisions
+
+### REUSE
+
+Use the code as a reference/baseline when:
+- task/data fit is close;
+- license permits use;
+- code/paper match;
+- reference result can be reproduced;
+- dependencies are manageable.
+
+### ADAPT
+
+Reuse selected components when:
+- architecture or utilities are useful;
+- your data/target/preprocessing differ;
+- the code is modular enough to change safely.
+
+Keep authors' reference environment separate from your adapted environment.
+
+### REIMPLEMENT
+
+Write a clean implementation when:
+- concept is useful but code is absent/incomplete;
+- license prevents reuse;
+- dependencies are too fragile;
+- code is tightly coupled to unrelated infrastructure;
+- paper/code discrepancies are large.
+
+Use a paper specification + unit tests + tiny-set overfit.
+
+### REJECT
+
+Do not use the method when:
+- scientific assumptions do not match your data;
+- validation is fundamentally weak for your intended use;
+- reported performance depends on leakage/confounding;
+- the method cannot be validated adequately for the risk level.
+
+## Evidence scorecard
+
+Score 0–2 and write evidence, not just a number.
+
+| Category | 0 | 1 | 2 |
+|---|---|---|---|
+| scientific task match | poor | partial | close |
+| modality/data match | poor | moderate | close |
+| license | unusable/unclear | restricted | compatible |
+| preprocessing clarity | hidden | partial | explicit |
+| paper/code agreement | poor | mixed | strong |
+| environment | broken | recoverable | reproducible |
+| pretrained weights | none/unusable | partial | usable |
+| metric verification | unclear | partial | verified |
+| split validity | concerning | uncertain | strong |
+| external validation | none | limited | strong |
+
+The score supports reasoning; it does not replace it.

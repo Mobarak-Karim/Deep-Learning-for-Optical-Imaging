@@ -2,186 +2,209 @@
 
 **Author: Md. Mobarak Karim, Ph.D.**
 
-A practical research course for learning deep learning in the context of **optical and biomedical imaging**. The goal is not simply to train neural networks. The goal is to learn how to move responsibly from a scientific paper or imaging problem to a reproducible, validated implementation.
+A self-contained, research-practical course for learning deep learning in the context of **optical and biomedical imaging**. The course is designed so that a motivated beginner can move from basic deep-learning concepts to reading a paper, auditing the authors' code, reproducing it, deciding whether to reuse/adapt/reimplement it, validating the method scientifically, and optimizing the implementation.
 
-This course emphasizes OCT, fluorescence microscopy, light-sheet microscopy, MUSE/slide-free histology, virtual staining, image segmentation, denoising/restoration, and related optical-imaging workflows.
+The course emphasizes OCT, fluorescence microscopy, light-sheet microscopy, MUSE/slide-free histology, virtual staining, segmentation, denoising/restoration, and related optical-imaging workflows.
 
-## The core question this course teaches you to answer
+## What makes this course different
 
-When you find a promising paper, you should be able to decide:
+This is not a "copy a PyTorch model and train it" course. Every lesson asks:
 
-> **Should I use the authors' code, adapt selected parts, reimplement the method myself, or reject the method for my problem?**
+1. **What problem am I solving?**
+2. **What is the scientific input and target?**
+3. **What equation or modeling assumption is being used?**
+4. **Why is this architecture/loss/metric reasonable?**
+5. **What can go wrong?**
+6. **How will I prove the result is valid?**
+7. **Should I reuse authors' code, adapt it, reimplement it, or reject it?**
+8. **How should I optimize only after correctness?**
 
-The authors do not make this decision for your project. You make it from evidence: task match, data match, license, code quality, reproducibility, preprocessing, metrics, hardware requirements, and scientific validation.
-
-## Research workflow
-
-```mermaid
-flowchart TD
-    A[Define the optical-imaging question] --> B[Read the paper]
-    B --> C[Extract input target architecture loss metrics and split]
-    C --> D{Public code available?}
-    D -->|Yes| E[Audit repository and license]
-    D -->|No| F[Write a paper specification]
-    E --> G{Code scientifically and technically suitable?}
-    G -->|Yes| H[Reproduce one reported result first]
-    G -->|Partly| I[Reuse selected components only]
-    G -->|No| F
-    H --> J[Build your own baseline]
-    I --> J
-    F --> K[Minimum faithful reimplementation]
-    K --> J
-    J --> L[Validate on your data]
-    L --> M[Optimize only after correctness]
-    M --> N[Profile speed and memory]
-    N --> O[AMP / loader tuning / compile when justified]
-    O --> P[External and scientific validation]
-```
-
-## Learning mind map
+## Complete learning map
 
 ```mermaid
 mindmap
-  root((Deep learning for optical imaging))
+  root((Deep Learning for Optical Imaging))
     Foundations
-      Tensors
-      Autograd
-      Models
-      Losses
-      Optimizers
-      Datasets
-    Optical data
-      OCT
-      Fluorescence
-      LSFM
-      MUSE
-      Histology
-      Multichannel images
+      Neural networks
+        Weighted sums
+        Activations
+        Forward pass
+      Learning
+        Loss
+        Gradients
+        Backpropagation
+        Optimizers
+      PyTorch
+        Tensors
+        NCHW
+        Autograd
+        nn.Module
+        Dataset/DataLoader
+    Optical imaging data
+      Modalities
+        OCT
+        Fluorescence
+        LSFM
+        MUSE
+        Histology
+      Data design
+        Specimen-level split
+        Patches
+        2D 2.5D 3D
+        Normalization
+        Augmentation
+        Registration
     Paper to code
-      Read methods
-      Extract equations
+      Read paper
+        Scientific claim
+        Architecture
+        Equations
+        Metrics
       Audit GitHub
-      Check license
+        License
+        Environment
+        Dataloader
+        Model
+        Loss
+        Metrics
       Reproduce
       Reimplement
-    Tasks
+      Reuse adapt reject
+    Applications
       Segmentation
-      Denoising
+        U-Net
+        Dice
+        BCE
       Restoration
+        Denoising
+        PSNR
+        SSIM
+        Hallucination
       Virtual staining
-      Classification
-      Super resolution
+        Paired
+        Unpaired
+        Morphology fidelity
+      Small data
+        Transfer learning
+        Cross-validation
+        Imbalance
     Validation
-      Data leakage
-      Specimen level split
-      Hallucination
-      Uncertainty
+      Leakage
       External validation
-      Biological plausibility
+      Domain shift
+      Uncertainty
+      Calibration
+      Failure cases
+      Hallucination tests
     Optimization
-      Baseline first
-      Mixed precision
-      Data loading
-      Profiling
-      torch.compile
+      Measure first
+      AMP
+      DataLoader
       Memory
+      Profiler
+      torch.compile
+    Research output
+      Reproducible config
+      Split manifest
+      Paper checklist
+      Code audit
+      Final report
+```
+
+## The central research decision
+
+```mermaid
+flowchart TD
+    A[Define optical-imaging question] --> B[Read paper deeply]
+    B --> C[Build paper specification]
+    C --> D{Authors' code available?}
+    D -->|No| E[Minimum faithful reimplementation]
+    D -->|Yes| F[Audit license + repository]
+    F --> G{Can one published result be reproduced?}
+    G -->|Yes| H{Does method match your data/problem?}
+    G -->|No| I[Debug reproduction and document discrepancy]
+    I --> J{Still trustworthy/useful?}
+    J -->|No| E
+    J -->|Yes| H
+    H -->|Strong match| K[Reuse as reference baseline]
+    H -->|Partial match| L[Adapt selected components]
+    H -->|Poor code fit but useful idea| E
+    H -->|Poor scientific fit| M[Reject method]
+    K --> N[Build your own baseline]
+    L --> N
+    E --> N
+    N --> O[Validate scientifically]
+    O --> P[Optimize only after correctness]
 ```
 
 ## Course order
 
 | Lesson | Topic | Main question |
 |---|---|---|
-| [`00_setup_reproducibility.ipynb`](00_setup_reproducibility.ipynb) | Setup + reproducibility | Is my environment and experiment traceable? |
-| [`01_tensors_autograd_models.ipynb`](01_tensors_autograd_models.ipynb) | PyTorch foundations | What actually happens in a training step? |
-| [`02_optical_imaging_datasets.ipynb`](02_optical_imaging_datasets.ipynb) | Optical datasets | How should imaging data be represented and split? |
-| [`03_cnn_training_baseline.ipynb`](03_cnn_training_baseline.ipynb) | CNN baseline | Can I build a simple correct baseline first? |
-| [`04_read_a_paper_like_an_engineer.ipynb`](04_read_a_paper_like_an_engineer.ipynb) | Paper reading | What information must I extract before coding? |
-| [`05_audit_authors_code.ipynb`](05_audit_authors_code.ipynb) | GitHub/code audit | Should I use the authors' implementation? |
-| [`06_reproduce_authors_repository.ipynb`](06_reproduce_authors_repository.ipynb) | Reproduction | Can I reproduce one authors' result before adapting it? |
-| [`07_reimplement_from_paper.ipynb`](07_reimplement_from_paper.ipynb) | Reimplementation | What if the code is absent, outdated, or unsuitable? |
-| [`08_segmentation_unet.ipynb`](08_segmentation_unet.ipynb) | Segmentation | How do I build and validate a U-Net-style baseline? |
-| [`09_denoising_restoration.ipynb`](09_denoising_restoration.ipynb) | Restoration | How do I denoise without erasing or inventing structures? |
-| [`10_virtual_staining_translation.ipynb`](10_virtual_staining_translation.ipynb) | Virtual staining | How should image-to-image translation be validated? |
-| [`11_small_data_transfer_learning.ipynb`](11_small_data_transfer_learning.ipynb) | Small data | What should I do when biomedical data are limited? |
-| [`12_validation_leakage_hallucination.ipynb`](12_validation_leakage_hallucination.ipynb) | Scientific validation | Is the result real, generalizable, and biologically defensible? |
-| [`13_optimization_amp_profiler_compile.ipynb`](13_optimization_amp_profiler_compile.ipynb) | Optimization | How do I make a correct implementation faster? |
-| [`14_final_paper_to_code_project.ipynb`](14_final_paper_to_code_project.ipynb) | Final project | Can I take one optical-imaging paper from audit to validated implementation? |
+| [`00_setup_reproducibility.ipynb`](00_setup_reproducibility.ipynb) | Setup + reproducibility | Can another researcher reconstruct my experiment? |
+| [`01_tensors_autograd_models.ipynb`](01_tensors_autograd_models.ipynb) | Deep-learning foundations | What does a neural network actually compute and learn? |
+| [`02_optical_imaging_datasets.ipynb`](02_optical_imaging_datasets.ipynb) | Optical-imaging data | How should images, specimens, patches, normalization, and splits be designed? |
+| [`03_cnn_training_baseline.ipynb`](03_cnn_training_baseline.ipynb) | CNN + training baseline | Can I build and debug a simple correct baseline first? |
+| [`04_read_a_paper_like_an_engineer.ipynb`](04_read_a_paper_like_an_engineer.ipynb) | Read a paper | How do I convert paper prose/figures/equations into an implementation specification? |
+| [`05_audit_authors_code.ipynb`](05_audit_authors_code.ipynb) | Audit authors' code | Should I trust/reuse this GitHub repository? |
+| [`06_reproduce_authors_repository.ipynb`](06_reproduce_authors_repository.ipynb) | Reproduction | Can I reproduce one reference result before changing the code? |
+| [`07_reimplement_from_paper.ipynb`](07_reimplement_from_paper.ipynb) | Reimplementation | What is the cleanest process when public code is missing, broken, or unsuitable? |
+| [`08_segmentation_unet.ipynb`](08_segmentation_unet.ipynb) | Segmentation | How do U-Net, BCE, Dice, thresholds, and optical QC fit together? |
+| [`09_denoising_restoration.ipynb`](09_denoising_restoration.ipynb) | Denoising/restoration | How do I improve image quality without deleting or inventing structures? |
+| [`10_virtual_staining_translation.ipynb`](10_virtual_staining_translation.ipynb) | Virtual staining | How do pairing, registration, losses, GANs, color, and morphology validation interact? |
+| [`11_small_data_transfer_learning.ipynb`](11_small_data_transfer_learning.ipynb) | Small biomedical data | How do I work honestly with few independent specimens? |
+| [`12_validation_leakage_hallucination.ipynb`](12_validation_leakage_hallucination.ipynb) | Scientific validation | Is performance real, generalizable, and biologically defensible? |
+| [`13_optimization_amp_profiler_compile.ipynb`](13_optimization_amp_profiler_compile.ipynb) | Optimization | How do I make a correct implementation faster and more memory-efficient? |
+| [`14_final_paper_to_code_project.ipynb`](14_final_paper_to_code_project.ipynb) | Final project | Can I take one paper from selection to validated implementation? |
 
-## Decision rule: authors' code vs your own implementation
+## How each notebook is designed
 
-Use the authors' code as a **reference implementation**, not as automatic truth.
+Each lesson contains:
 
-### Strong reason to reuse it
-
-- the task and input/target definition match your problem;
-- the license permits your intended use;
-- preprocessing and data split are documented;
-- model architecture and loss match the paper;
-- training/inference scripts are available;
-- you can reproduce at least one reported behavior or metric;
-- dependency and hardware requirements are reasonable;
-- the code can be isolated in a reproducible environment.
-
-### Strong reason to reimplement
-
-- no usable license;
-- repository is incomplete or only contains inference code;
-- critical preprocessing is hidden;
-- code and paper disagree;
-- obsolete dependencies make reproduction fragile;
-- the implementation is tightly coupled to unrelated infrastructure;
-- your task differs enough that adaptation would be more confusing than a clean baseline;
-- you cannot establish what produces the reported result.
-
-See [`CODE_REUSE_DECISION_GUIDE.md`](CODE_REUSE_DECISION_GUIDE.md) and [`PAPER_TO_CODE_CHECKLIST.md`](PAPER_TO_CODE_CHECKLIST.md).
-
-## Optimization principle
-
-Never optimize a pipeline you have not shown to be correct.
-
-```text
-correctness
-    ↓
-valid split + meaningful metric
-    ↓
-small-data overfit test
-    ↓
-reproducible baseline
-    ↓
-measure time and memory
-    ↓
-fix data bottlenecks
-    ↓
-AMP / batch strategy
-    ↓
-profile
-    ↓
-torch.compile when useful
-    ↓
-scale hardware only if needed
-```
-
-Current PyTorch uses `torch.amp` / `torch.autocast` for automatic mixed precision. `torch.profiler` should be used to identify real bottlenecks rather than guessing. `torch.compile` can improve performance, but compilation overhead and graph breaks mean it should be benchmarked rather than assumed to help every model.
-
-## Optical-imaging safety rule
-
-> **A prettier output is not automatically a more scientifically correct output.**
-
-For restoration, virtual staining, super-resolution, reconstruction, or modality translation, always investigate whether the network can remove real structures or create plausible structures unsupported by the measured data.
-
-Metrics such as PSNR or SSIM are useful but not sufficient by themselves. Validation should also reflect the scientific task: morphology, resolution, contrast, quantitative intensity behavior, specimen-level generalization, acquisition variation, and domain shift.
+- a learning mind map;
+- concepts explained before code;
+- equations translated into programming logic;
+- heavily commented examples;
+- optical-imaging-specific examples;
+- decision rules (when to use / when not to use);
+- common failure modes;
+- validation questions;
+- research checklists;
+- worked reasoning examples.
 
 ## Companion guides
 
-- [`OPTICAL_IMAGING_CHEATSHEET.md`](OPTICAL_IMAGING_CHEATSHEET.md) — model/loss/metric starting points for optical imaging.
-- [`PAPER_TO_CODE_CHECKLIST.md`](PAPER_TO_CODE_CHECKLIST.md) — reusable paper audit sheet.
-- [`CODE_REUSE_DECISION_GUIDE.md`](CODE_REUSE_DECISION_GUIDE.md) — decide reuse/adapt/reimplement/reject.
-- [`EXPERIMENT_CHECKLIST.md`](EXPERIMENT_CHECKLIST.md) — before, during, and after training.
-- [`REFERENCES.md`](REFERENCES.md) — primary documentation and research references.
+- [`DEEP_LEARNING_CHEATSHEET.md`](DEEP_LEARNING_CHEATSHEET.md) — neural-network/PyTorch concepts and training workflow.
+- [`OPTICAL_IMAGING_CHEATSHEET.md`](OPTICAL_IMAGING_CHEATSHEET.md) — model/loss/metric/validation starting points for OCT, fluorescence, MUSE, virtual staining, segmentation, restoration, and classification.
+- [`PAPER_TO_CODE_CHECKLIST.md`](PAPER_TO_CODE_CHECKLIST.md) — complete paper specification template.
+- [`CODE_REUSE_DECISION_GUIDE.md`](CODE_REUSE_DECISION_GUIDE.md) — evidence-based reuse/adapt/reimplement/reject decision.
+- [`EXPERIMENT_CHECKLIST.md`](EXPERIMENT_CHECKLIST.md) — before/during/after training.
+- [`REFERENCES.md`](REFERENCES.md) — official PyTorch and scientific-imaging references.
+
+## Recommended research workflow
+
+```text
+scientific question
+→ define independent biological unit
+→ establish simple baseline
+→ read candidate paper
+→ extract exact method specification
+→ audit code/license
+→ reproduce one reference result
+→ decide reuse/adapt/reimplement/reject
+→ tiny-set overfit test
+→ train on valid specimen split
+→ validate metrics + failure cases
+→ test domain shift / hallucination risk
+→ profile time and memory
+→ optimize one bottleneck at a time
+→ freeze final model and test once
+→ report limitations and reproducibility information
+```
 
 ## Installation
 
-Create a dedicated environment. Install PyTorch using the command appropriate for your operating system/GPU from the official PyTorch installation selector, then install the remaining course packages.
+Use a dedicated environment. Install PyTorch from the official selector appropriate for your operating system and GPU, then install the remaining course packages.
 
 ```bash
 python -m venv .venv
@@ -196,7 +219,7 @@ python -m pip install -r requirements.txt
 jupyter lab
 ```
 
-Check the installation:
+Check PyTorch:
 
 ```python
 import torch
@@ -208,11 +231,13 @@ if torch.cuda.is_available():
 
 ## Data policy
 
-Do not put private, patient-identifiable, proprietary, or unpublished research data in a public repository. Keep authoritative raw data unchanged. Store split manifests and metadata needed to reproduce the experiment.
+Do not commit private, patient-identifiable, proprietary, or unpublished research data to this public repository. Keep authoritative raw data unchanged. Save split manifests and metadata necessary to reproduce the experiment.
 
-## Scope
+## Scientific rule for generated/restored images
 
-This course is beginner-to-research-practical. It emphasizes reasoning, implementation, validation, and reproducibility. It does not attempt to be an exhaustive treatment of every modern architecture.
+> **A visually attractive deep-learning output is not automatically a scientifically correct output.**
+
+For restoration, super-resolution, reconstruction, virtual staining, or modality translation, explicitly test whether the model removes real structures or creates plausible structures unsupported by the measurement.
 
 ## Author
 
@@ -221,4 +246,4 @@ GitHub: [Mobarak-Karim](https://github.com/Mobarak-Karim)
 
 ## License
 
-Course material is released under the MIT License. External paper repositories, pretrained weights, datasets, and figures retain their own licenses and must be checked separately.
+New course material is released under the MIT License. External repositories, pretrained weights, datasets, and figures retain their own licenses and must be checked independently.

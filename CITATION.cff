@@ -1,11 +1,11 @@
 cff-version: 1.2.0
-title: Deep Learning for Optical Imaging
-message: If this educational repository is useful to your work, please cite the repository.
+message: "If you use this course, please cite it."
+title: "Deep Learning for Optical Imaging"
 type: software
 authors:
   - family-names: Karim
     given-names: Md. Mobarak
-version: 1.0.0
+version: 2.0.0
 date-released: 2026-09-11
+url: "https://github.com/Mobarak-Karim/Deep-Learning-for-Optical-Imaging"
 license: MIT
-repository-code: https://github.com/Mobarak-Karim/Deep-Learning-for-Optical-Imaging

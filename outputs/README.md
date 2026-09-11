@@ -1,3 +1,3 @@
-# Outputs
+# Outputs folder
 
-Use this folder for generated figures, metrics, predictions, and experiment summaries. Large model checkpoints should normally be stored outside Git history.
+Use this folder for generated predictions, figures, logs, and evaluation tables. Large checkpoints should generally not be committed to Git.
