@@ -158,14 +158,14 @@ flowchart TD
 | [`14_final_paper_to_code_project.ipynb`](14_final_paper_to_code_project.ipynb) | Final project | Can I take one paper from selection to validated implementation? |
 | [`15_case_study_CARE_fluorescence_restoration.ipynb`](15_case_study_CARE_fluorescence_restoration.ipynb) | **Case study: CARE / CSBDeep** | How do I reproduce paired fluorescence restoration and decide reuse vs reimplementation? |
 | [`16_case_study_Noise2Void_self_supervised_denoising.ipynb`](16_case_study_Noise2Void_self_supervised_denoising.ipynb) | **Case study: Noise2Void** | How do I reproduce a legacy self-supervised denoising method and evaluate its noise assumptions? |
+| [`17_case_study_original_UNet_segmentation.ipynb`](17_case_study_original_UNet_segmentation.ipynb) | **Case study: original U-Net** | How do I reproduce the original segmentation logic and adapt it honestly to OCT/MUSE/fluorescence/LSFM? |
+| [`18_case_study_MUSE_virtual_HE.ipynb`](18_case_study_MUSE_virtual_HE.ipynb) | **Case study: MUSE → virtual H&E** | When should I use pix2pix, CycleGAN, or a Beer–Lambert/color-mapping baseline for MUSE virtual histology? |
 
 ## Full paper-to-code case studies
 
-The final two notebooks are deliberately different from the conceptual lessons. They walk through **real published papers and the authors' public repositories**.
+The final case-study notebooks walk through **real published papers, historical/public implementations where available, and explicit reimplementation strategies when authors-specific code is not released**.
 
 ### Case study 1 — CARE / CSBDeep
-
-Use this when you want to understand a paired supervised restoration workflow:
 
 ```text
 paper
@@ -181,8 +181,6 @@ paper
 
 ### Case study 2 — Noise2Void
 
-Use this when clean targets are unavailable:
-
 ```text
 paper
 → identify blind-spot assumptions
@@ -193,6 +191,32 @@ paper
 → test structured-noise failure modes
 → decide whether N2V is statistically suitable for the optical modality
 ```
+
+### Case study 3 — Original U-Net
+
+```text
+paper
+→ reproduce original shape logic + historical Caffe release
+→ identify valid convolutions, cropping, weighted borders, augmentation, overlap-tile inference
+→ build a transparent modern PyTorch teaching implementation
+→ document every deviation from the original
+→ adapt to OCT / MUSE / fluorescence / LSFM segmentation
+```
+
+### Case study 4 — MUSE → virtual H&E
+
+```text
+MUSE + accurately registered H&E pair?
+→ pix2pix candidate
+
+no exact pair, but representative MUSE and H&E domains?
+→ CycleGAN candidate
+
+small data / need deterministic auditable baseline?
+→ Beer–Lambert / color-mapping baseline
+```
+
+The MUSE notebook uses the peer-reviewed Deep-MUSE paper as the main study and connects it to earlier MUSE virtual-H&E color mapping and unpaired MUSE→H&E GAN work. It emphasizes registration, input inversion, specimen-level splitting, morphology preservation, tiled inference, and pathologist-oriented validation.
 
 These notebooks distinguish **exact authors-code reproduction** from a **teaching reimplementation**. A simplified PyTorch example is never presented as a reproduction of the paper's numerical results.
 
