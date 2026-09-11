@@ -156,6 +156,45 @@ flowchart TD
 | [`12_validation_leakage_hallucination.ipynb`](12_validation_leakage_hallucination.ipynb) | Scientific validation | Is performance real, generalizable, and biologically defensible? |
 | [`13_optimization_amp_profiler_compile.ipynb`](13_optimization_amp_profiler_compile.ipynb) | Optimization | How do I make a correct implementation faster and more memory-efficient? |
 | [`14_final_paper_to_code_project.ipynb`](14_final_paper_to_code_project.ipynb) | Final project | Can I take one paper from selection to validated implementation? |
+| [`15_case_study_CARE_fluorescence_restoration.ipynb`](15_case_study_CARE_fluorescence_restoration.ipynb) | **Case study: CARE / CSBDeep** | How do I reproduce paired fluorescence restoration and decide reuse vs reimplementation? |
+| [`16_case_study_Noise2Void_self_supervised_denoising.ipynb`](16_case_study_Noise2Void_self_supervised_denoising.ipynb) | **Case study: Noise2Void** | How do I reproduce a legacy self-supervised denoising method and evaluate its noise assumptions? |
+
+## Full paper-to-code case studies
+
+The final two notebooks are deliberately different from the conceptual lessons. They walk through **real published papers and the authors' public repositories**.
+
+### Case study 1 — CARE / CSBDeep
+
+Use this when you want to understand a paired supervised restoration workflow:
+
+```text
+paper
+→ select one fluorescence-restoration experiment
+→ audit CSBDeep
+→ freeze an exact environment
+→ reproduce authors' example first
+→ map paper concepts to source code
+→ reproduce a small reference result
+→ build a transparent teaching baseline
+→ decide REUSE / ADAPT / REIMPLEMENT / REJECT
+```
+
+### Case study 2 — Noise2Void
+
+Use this when clean targets are unavailable:
+
+```text
+paper
+→ identify blind-spot assumptions
+→ audit the legacy juglab/n2v repository
+→ reproduce in a pinned TensorFlow environment
+→ understand masking + masked-pixel loss
+→ reimplement the core idea transparently
+→ test structured-noise failure modes
+→ decide whether N2V is statistically suitable for the optical modality
+```
+
+These notebooks distinguish **exact authors-code reproduction** from a **teaching reimplementation**. A simplified PyTorch example is never presented as a reproduction of the paper's numerical results.
 
 ## How each notebook is designed
 
