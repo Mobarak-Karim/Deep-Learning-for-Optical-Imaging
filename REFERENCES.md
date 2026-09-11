@@ -44,6 +44,30 @@ For any paper you reproduce, cite the original paper, its code repository, datas
 - The official repository currently warns that the legacy package is not compatible with TensorFlow 2.16 and is being superseded by newer maintained tooling such as CAREamics.
 - Public fluorescence teaching dataset example: ZeroCostDL4Mic Noise2Void 2-D dataset, Zenodo DOI 10.5281/zenodo.3713315.
 
+### Original U-Net segmentation case study
+
+- Ronneberger O, Fischer P, Brox T. **U-Net: Convolutional Networks for Biomedical Image Segmentation.** MICCAI (2015), LNCS 9351:234–241.
+- Original Freiburg project/release page: https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/
+- Freiburg U-Net software page: https://lmb.informatik.uni-freiburg.de/lmbsoft/unet.en.html
+- The original release used a modified Caffe stack with MATLAB tooling and overlap-tile segmentation; the course distinguishes this historical implementation from modern same-padding PyTorch variants.
+
+### MUSE → virtual H&E case study
+
+- Chen Z, Yu W, Wong IHM, Wong TTW. **Deep-learning-assisted microscopy with ultraviolet surface excitation for rapid slide-free histological imaging.** *Biomedical Optics Express* 12(9), 5920–5938 (2021). DOI: 10.1364/BOE.433597
+- Fereidouni F, Harmany ZT, Tian M, et al. **Microscopy with ultraviolet surface excitation for rapid slide-free histology.** *Nature Biomedical Engineering* 1, 957–966 (2017).
+- MUSE Beer–Lambert/color-mapping code from the 2017 work: https://github.com/UCDavisMUSE/colourmapper
+- Abraham T, Shaw A, O'Connor D, Todd A, Levenson R. **Slide-free MUSE Microscopy to H&E Histology Modality Conversion via Unpaired Image-to-Image Translation GAN Models.** ICML Computational Biology Workshop / arXiv:2008.08579 (2020).
+- Canonical maintained PyTorch implementation for pix2pix and CycleGAN: https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
+
+### MUSE interpretation note
+
+For Deep-MUSE reproduction, distinguish:
+1. facts and preprocessing reported in the MUSE paper;
+2. the generic pix2pix/CycleGAN algorithm implementation;
+3. MUSE-specific dataset/registration/inversion/tiling code.
+
+Using a canonical CycleGAN implementation to reconstruct the method is a **reimplementation strategy**, not proof that the authors released that exact MUSE training repository.
+
 ### Important interpretation
 
 The case-study notebooks separate:
